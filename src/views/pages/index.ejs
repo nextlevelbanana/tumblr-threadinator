@@ -16,7 +16,7 @@
 <% Object.keys(data).sort().forEach(blogName => {%>
     <h2><%-blogName%></h2>
     <% Object.keys(data[blogName]).sort().forEach(tag => {%>
-        <h3><a href="https://<%-name%>.tumblr.com/tagged/<%-tag%>"><%-tag%></a></h3>
+        <h3><a href="https://<%-name%>.tumblr.com/tagged/rp%3A-<%-tag.replace(/:/g, '%3A').replace(/ /g, '-')%>"><%-tag%></a></h3>
         <ul>
             <% data[blogName][tag].forEach(i => {%>
                 <li><a href="<%-i%>"><%-i%></a></li>
