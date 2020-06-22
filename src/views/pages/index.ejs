@@ -6,7 +6,12 @@
 </head>
 <body>
     
-<div id="root"><h1><%- name %>: RP thread link list</h1></div>
+    <div class="header">
+        <img src="http://api.tumblr.com/v2/blog/<%-name%>/avatar"/>
+        <h1><%- name %>: RP thread link list</h1>
+        <img src="http://api.tumblr.com/v2/blog/<%-name%>/avatar"/>
+    </div>
+    
 <div class="content">
 <% Object.keys(data).sort().forEach(blogName => {%>
     <h2><%-blogName%></h2>

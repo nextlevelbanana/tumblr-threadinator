@@ -44,5 +44,17 @@ ul {
     color: white;
 }
 
+.header {
+    
+    text-align:center;
+    margin: 1rem auto;
+}
+
+.header * {
+    display: inline-block;
+    margin-right: 2rem;
+    vertical-align: middle;
+}
+
 
 
