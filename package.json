@@ -1,0 +1,20 @@
+{
+  "name": "rp-threadinator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "fastify": "^2.15.0",
+    "fastify-static": "^2.7.0",
+    "preact-cli": "^2.2.1",
+    "preact-render-to-string": "^5.1.9",
+    "tumblr.js": "^2.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node -e 'require(\"./index\").getTagList()'",
+    "start": "node server.js"
+  },
+  "author": "Next Level Banana",
+  "license": "ISC"
+}
