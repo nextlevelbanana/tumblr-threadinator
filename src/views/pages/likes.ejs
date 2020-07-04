@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title><%- name %> Page o Likes</title>
+    <link rel="stylesheet" type="text/css" href="/likes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+</head>
+<body>
+    
+    <div class="header">
+        <img src="http://api.tumblr.com/v2/blog/<%-name%>/avatar"/>
+        <h1><%- name %>: page o' likes</h1>
+        <img src="http://api.tumblr.com/v2/blog/<%-name%>/avatar"/>
+    </div>
+    
+    
+<div class="content">
+    <div class="links">
+        <% if (data._links && data._links.prev) { %>
+    <a href="/likes/<%-name%>/after/<%-data._links.prev.query_params.after%>"><<<<< newer</a>
+    <% } %>
+    <% if (data._links && data._links.next) { %>
+
+    <a href="/likes/<%-name%>/before/<%-data._links.next.query_params.before%>">older >>>>></a>
+    <% } %>
+
+    </div>
+<% data.liked_posts.forEach(post => {%>
+    <div class="apost">
+        <div class="apost-header">
+        <span><%-post.blog_name%></span> <a href="<%-post.post_url%>">(go to post)</a>
+    </div>
+
+    <div><%-post.body%></div>
+
+    <% post.photos && post.photos.forEach(pic => {%>
+        <img src="<%-pic.original_size.url%>"/>
+    <%}) %> 
+
+    <div><%-post.question%></div>
+    <div><%-post.answer%></div>
+
+
+
+    </div>
+<%}) %> 
+</div>
+
+
+<div class="small-print">This page brought to you by <a href="https://flyinbanachab.tumblr.com/ask">Flyinbanachab</a>.</div>
+</body>
+</html>

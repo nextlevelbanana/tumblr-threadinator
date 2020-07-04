@@ -3,6 +3,8 @@ const compression = require("compression");
 const path = require("path");
 const fs = require("fs");
 
+const tumblr = require('tumblr.js');
+
 
 // Server var
 const app = express();
@@ -20,6 +22,90 @@ app.get('/blog/:name', async (req, res) => {
         data: JSON.parse(fs.readFileSync(path.resolve(__dirname,`../${req.params.name}-output.json`)))
         });
     });
+
+
+app.get("/likes/:username/page/:num", async(req,res) => {
+    var client = tumblr.createClient({
+        returnPromises: true,
+        credentials: {
+            consumer_key: process.env.consumer_key,
+            consumer_secret: process.env.consumer_secret,
+            token: process.env.token,
+            token_secret: process.env.token_secret
+        }
+      });
+    
+      try {
+      var data = await client.blogLikes(req.params.username, {offset: 20 * (req.params.num - 1)});
+      res.status(200).render('pages/likes', {name: req.params.username, 
+        data: data});
+      } catch (err) {
+        res.send("Something went wrong. Make sure your likes are publicly accessible and that the blog name you're using is your main blog.")
+      }
+});
+
+app.get("/likes/:username/before/:date", async(req,res) => {
+        var client = tumblr.createClient({
+            returnPromises: true,
+            credentials: {
+                consumer_key: process.env.consumer_key,
+                consumer_secret: process.env.consumer_secret,
+                token: process.env.token,
+                token_secret: process.env.token_secret
+            }
+        });
+        
+        try {
+            var myDate = new Date(req.params.date);
+                var myEpoch = req.params.date.includes("-") ? myDate.getTime()/1000.0 : req.params.date;
+            var data = await client.blogLikes(req.params.username, {before: myEpoch});
+            res.status(200).render('pages/likes', {name: req.params.username, 
+                data: data})
+        } catch (err) {
+            res.send("Something went wrong. Make sure your likes are publicly accessible and that the blog name you're using is your main blog.")
+        }
+    });
+
+app.get("/likes/:username/after/:date", async(req,res) => {
+        var client = tumblr.createClient({
+            returnPromises: true,
+            credentials: {
+                consumer_key: process.env.consumer_key,
+                consumer_secret: process.env.consumer_secret,
+                token: process.env.token,
+                token_secret: process.env.token_secret
+            }
+        });
+        
+        try {
+            var myDate = new Date(req.params.date); 
+            var myEpoch = req.params.date.includes("-") ? myDate.getTime()/1000.0 : req.params.date;
+            var data = await client.blogLikes(req.params.username, {after: myEpoch});
+            res.status(200).render('pages/likes', {name: req.params.username, 
+                data: data})
+        } catch (err) {
+            res.send("Something went wrong. Make sure your likes are publicly accessible and that the blog name you're using is your main blog.")
+        }
+    });
+
+
+app.get("/likes/:username", async(req,res) => {
+
+        var client = tumblr.createClient({
+            returnPromises: true,
+            credentials: {
+                consumer_key: process.env.consumer_key,
+                consumer_secret: process.env.consumer_secret,
+                token: process.env.token,
+                token_secret: process.env.token_secret
+            }
+          });
+        
+          var data = await client.blogLikes(req.params.username);
+          res.status(200).render('pages/likes', {name: req.params.username, 
+            data: data})
+        });
+        
 app.get('/', (req,res) => {
     res.send("<html><body><p>Welcome to the Tumblr Threadinator!</p><p>All pages can be found under /blog/{blogname}.</p></body></html>")
 })
@@ -28,4 +114,5 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, function listenHandler() {
     console.info(`Running on ${port}`)
+    console.info("right as rain")
 });
