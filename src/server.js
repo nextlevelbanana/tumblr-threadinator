@@ -107,7 +107,7 @@ app.get("/likes/:username", async(req,res) => {
         });
         
 app.get('/', (req,res) => {
-    res.send("<html><body><p>Welcome to the Tumblr Threadinator!</p><p>All pages can be found under /blog/{blogname}.</p></body></html>")
+    res.send("<html><body><ul><li>/likes/YOUR-BLOG-NAME - see the first page of your likes</li><li>/likes/YOUR-BLOG-NAME/page/NUMBER - see page #NUMBER of your likes (only works up through page 51)</li><li>/likes/YOUR-BLOG-NAME/before/MM-DD-YYYY - see the page of your before the date MM-DD-YYYY</li><li>/likes/YOUR-BLOG-NAME/after/MM-DD-YYYY - see the page of your after the date MM-DD-YYYY</li></ul></body></html>")
 })
 
 const port = process.env.PORT || 3000;
