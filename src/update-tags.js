@@ -2,18 +2,18 @@ const fs = require("fs");
 const path = require("path");
 const makeList = require("./make-list");
 
-const update = async (blogname, tags) => {
+const update = async (blogname, tags, forceUpdate) => {
     console.log(blogname);
     const MongoClient = require('mongodb').MongoClient;
 
-    const tagArray = tags.split(",");
+    const tagArray = tags.split ? tags.split(",") : [];
 
-    if (!tagArray || !tagArray.length) return;
+    if (!forceUpdate && (!tagArray || !tagArray.length)) return;
 
-    const relevantTags = tagArray.filter(t => t.substring(0,3).toLowerCase() === "rp:");
+    const relevantTags = tagArray.filter ? tagArray.filter(t => t.substring(0,3).toLowerCase() === "rp:"): [];
     console.log(relevantTags);
 
-    if (!relevantTags || !relevantTags.length) return;
+    if (!forceUpdate && (!relevantTags || !relevantTags.length)) return;
 
     try {
         const client = await MongoClient.connect(process.env.MONGODB_URI);
@@ -25,11 +25,16 @@ const update = async (blogname, tags) => {
         let postCollection;
 
         if (await cursor.hasNext()) {
-            //todo: replace with useful things
             const blog = await cursor.next();
             console.log(blog.blogname + " found");
+            if (!blog.tags && !relevantTags) {
+                console.log("trying to re-parse tags")
+                relevantTags = JSON.parse(fs.readFileSync(path.resolve(__dirname,`../tagLists/${blogname}.json`), 'utf-8')).tags
+            }
             newTags = getUpdatedTags(blog.tags, relevantTags);
             postCollection = await makeList(blogname, newTags);
+            console.log(blog.tags.length);
+            console.log(newTags.length);
 
             if (newTags.length > blog.tags.length) {
                 const r = await db.collection("blogs").updateOne({blogname:blogname},
@@ -39,6 +44,7 @@ const update = async (blogname, tags) => {
         } else {
             console.log("blog not found");
             newTags = getUpdatedTags(JSON.parse(fs.readFileSync(path.resolve(__dirname,`../tagLists/${blogname}.json`), 'utf-8')).tags, relevantTags);
+            console.log(newTags.length)
             postCollection = await makeList(blogname, newTags);
 
             const r = await db.collection("blogs").insertOne({
@@ -49,7 +55,7 @@ const update = async (blogname, tags) => {
         }
 
         console.log("done with makeList");
-        return true;
+        return postCollection;
     } catch (err) {
         console.log(err);
         return err;
@@ -59,9 +65,10 @@ const update = async (blogname, tags) => {
 }
 
 const getUpdatedTags = (oldTags, newTags) => {
-
+    console.log(oldTags);
     let updatedTags = new Set(oldTags.filter(t => t.substring(0,3).toLowerCase() === "rp:"));
     newTags.forEach(tag => updatedTags.add(tag))
+    console.log(updatedTags.size)
 
     return Array.from(updatedTags);
 }

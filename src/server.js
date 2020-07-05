@@ -36,12 +36,17 @@ app.get('/blog/:blogname', async (req, res) => {
     const db = client.db(process.env.DB_NAME);
     const cursor = db.collection("blogs").find({blogname: req.params.blogname});
     if (await cursor.hasNext()) {
-        const blog = await cursor.next();
+        const blog = await cursor.next();   
         res.status(200).render('pages/index', {blogname: req.params.blogname, 
             data: blog.postCollection
             });
     } else {
-        res.send("Couldn't find a blog with that name.");
+        await updateTags(req.params.blogname, [], true);
+        const blog = await db.collection("blogs").find({blogname: req.params.blogname}).next();
+        console.log("blog: " + blog);
+        res.status(200).render('pages/index', {blogname: req.params.blogname, 
+            data: blog.postCollection
+        });
     } 
 });
 
@@ -129,7 +134,7 @@ app.get("/likes/:username", async(req,res) => {
         });
 
 app.post("/api/tags", async(req,res) => {
-    await updateTags(req.body.blogname, req.body.tags);
+    await updateTags(req.body.blogname, req.body.tags, false);
     res.sendStatus(204);
 });
         

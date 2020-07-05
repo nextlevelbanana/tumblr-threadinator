@@ -1,0 +1,60 @@
+
+/* Colors */
+body {
+    background: #311d05;
+    margin: 16px 32px;
+    font-family: "Helvetica Neue",HelveticaNeue,Arial,sans-serif;
+}
+
+.content {
+    background-color: whitesmoke;
+    margin: 0 auto;
+    max-width: 60vw;
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+h1 {
+    text-align: center;
+}
+
+h1,
+h2 {
+    color: #D95E40;
+    font-family: 'Gibson', sans-serif, "Helvetica Neue", HelveticaNeue, Arial, sans-serif;
+    font-weight: bold;
+}
+h3 {
+    margin-left:0.5rem;
+}
+
+a {
+    color: #F2992E;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+.small-print {
+    margin: 1rem auto;
+    text-align: center;
+    font-size: 0.75rem;
+    color: white;
+}
+
+.header {
+    
+    text-align:center;
+    margin: 1rem auto;
+}
+
+.header * {
+    display: inline-block;
+    margin-right: 2rem;
+    vertical-align: middle;
+}
+
+
+
