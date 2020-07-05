@@ -5,7 +5,7 @@ const tumblr = require('tumblr.js');
 const { filter } = require("compression");
 
   
-const getTagList = async (thisBlog, filteredTags) => {
+const getTagList = async (thisBlog, filteredTags, postCollection) => {
     var client = tumblr.createClient({
         returnPromises: true,
         credentials: {
@@ -17,7 +17,6 @@ const getTagList = async (thisBlog, filteredTags) => {
       });
     
     const startTime = new Date();
-    var postCollection = {};
     console.log("fetching for " + filteredTags.length + "tags");
     const timeOut = filteredTags.length > 300 ? 12000 : 0;
 
