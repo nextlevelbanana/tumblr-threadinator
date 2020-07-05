@@ -2,13 +2,25 @@ const express = require("express");
 const compression = require("compression");
 const path = require("path");
 const fs = require("fs");
-
+var bodyParser = require('body-parser');
 const tumblr = require('tumblr.js');
+const updateTags = require('./update-tags');
+const { resolveSoa } = require("dns");
+
+var MongoClient = require('mongodb').MongoClient;
+
+if (process.env.NODE_ENV =="development") {
+    require('dotenv').config();
+}
 
 
 // Server var
 const app = express();
 const router = express.Router();
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 
 // View engine setup
 app.set("views", path.join(__dirname,"views"));
@@ -19,7 +31,7 @@ app.use(compression());
 app.use(express.static(__dirname + "/public"));
 app.get('/blog/:name', async (req, res) => {
         res.status(200).render('pages/index', {name: req.params.name, 
-        data: JSON.parse(fs.readFileSync(path.resolve(__dirname,`../${req.params.name}-output.json`)))
+        data: JSON.parse(fs.readFileSync(path.resolve(__dirname,`./${req.params.name}-output.json`)))
         });
     });
 
@@ -105,14 +117,23 @@ app.get("/likes/:username", async(req,res) => {
           res.status(200).render('pages/likes', {name: req.params.username, 
             data: data})
         });
+
+app.post("/api/tags", async(req,res) => {
+    await updateTags(req.body.blogname, req.body.tags);
+    res.sendStatus(204);
+});
         
 app.get('/', (req,res) => {
     res.send("<html><body><ul><li>/likes/YOUR-BLOG-NAME - see the first page of your likes</li><li>/likes/YOUR-BLOG-NAME/page/NUMBER - see page #NUMBER of your likes (only works up through page 51)</li><li>/likes/YOUR-BLOG-NAME/before/MM-DD-YYYY - see the page of your before the date MM-DD-YYYY</li><li>/likes/YOUR-BLOG-NAME/after/MM-DD-YYYY - see the page of your after the date MM-DD-YYYY</li></ul></body></html>")
 })
 
 const port = process.env.PORT || 3000;
-
-app.listen(port, function listenHandler() {
-    console.info(`Running on ${port}`)
-    console.info("right as rain")
+MongoClient.connect(process.env.MONGODB_URI, function(err, client) {
+    if (err) throw err;
+    client.close();
+    app.listen(port, function listenHandler() {
+        console.info(`Running on ${port}`)
+    });
 });
+
+
