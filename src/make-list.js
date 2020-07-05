@@ -30,7 +30,7 @@ const getTagList = async (thisBlog, filteredTags) => {
             const response = await client.blogPosts(thisBlog, { tag: tag})
             await onGetOne(response, thisBlog, partners, postCollection, tag)
         }
-        if (filteredTags.length > i+j)
+        if (filteredTags.length > i)
             await new Promise(r => setTimeout(r, 60000));
     }
 
