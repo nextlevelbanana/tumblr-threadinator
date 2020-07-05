@@ -6,7 +6,11 @@ const update = async (blogname, tags) => {
     console.log(blogname);
     const MongoClient = require('mongodb').MongoClient;
 
-    const relevantTags = tags.filter(t => t.substring(0,3).toLowerCase() === "rp:");
+    const tagArray = tags.split(",");
+
+    if (!tagArray || !tagArray.length) return;
+
+    const relevantTags = tagArray.filter(t => t.substring(0,3).toLowerCase() === "rp:");
     console.log(relevantTags);
 
     if (!relevantTags || !relevantTags.length) return;

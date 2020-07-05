@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const tumblr = require('tumblr.js');
+const { filter } = require("compression");
 
   
 const getTagList = async (thisBlog, filteredTags) => {
@@ -29,7 +30,8 @@ const getTagList = async (thisBlog, filteredTags) => {
             const response = await client.blogPosts(thisBlog, { tag: tag})
             await onGetOne(response, thisBlog, partners, postCollection, tag)
         }
-        await new Promise(r => setTimeout(r, 60000));
+        if (filteredTags.length > i+j)
+            await new Promise(r => setTimeout(r, 60000));
     }
 
     console.log("done with loop");
