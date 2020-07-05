@@ -29,11 +29,21 @@ app.set("view engine", "ejs");
 // Middleware
 app.use(compression());
 app.use(express.static(__dirname + "/public"));
-app.get('/blog/:name', async (req, res) => {
-        res.status(200).render('pages/index', {name: req.params.name, 
-        data: JSON.parse(fs.readFileSync(path.resolve(__dirname,`./${req.params.name}-output.json`)))
-        });
-    });
+app.get('/blog/:blogname', async (req, res) => {
+
+    const client = await MongoClient.connect(process.env.MONGODB_URI);
+
+    const db = client.db(process.env.DB_NAME);
+    const cursor = db.collection("blogs").find({blogname: req.params.blogname});
+    if (await cursor.hasNext()) {
+        const blog = await cursor.next();
+        res.status(200).render('pages/index', {blogname: req.params.blogname, 
+            data: blog.postCollection
+            });
+    } else {
+        res.send("Couldn't find a blog with that name.");
+    } 
+});
 
 
 app.get("/likes/:username/page/:num", async(req,res) => {

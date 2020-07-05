@@ -22,29 +22,33 @@ const update = async (blogname, tags) => {
         let newTags;
         console.log("connectioned")
         const cursor = db.collection("blogs").find({blogname: blogname});
+        let postCollection;
+
         if (await cursor.hasNext()) {
             //todo: replace with useful things
             const blog = await cursor.next();
             console.log(blog.blogname + " found");
             newTags = getUpdatedTags(blog.tags, relevantTags);
+            postCollection = await makeList(blogname, newTags);
+
             if (newTags.length > blog.tags.length) {
                 const r = await db.collection("blogs").updateOne({blogname:blogname},
-                    { $set: { "tags": newTags } } 
+                    { $set: { "tags": newTags, "postCollection": postCollection } } 
                 );
-                await makeList(blogname, newTags);
             }
         } else {
             console.log("blog not found");
             newTags = getUpdatedTags(JSON.parse(fs.readFileSync(path.resolve(__dirname,`../tagLists/${blogname}.json`), 'utf-8')).tags, relevantTags);
+            postCollection = await makeList(blogname, newTags);
+
             const r = await db.collection("blogs").insertOne({
                 blogname: blogname,
-                tags: newTags
+                tags: newTags,
+                postCollection: postCollection
             });
-            await makeList(blogname, newTags);
         }
 
-        console.log("new output I think");
-
+        console.log("done with makeList");
         return true;
     } catch (err) {
         console.log(err);

@@ -30,17 +30,19 @@ const getTagList = async (thisBlog, filteredTags) => {
             const response = await client.blogPosts(thisBlog, { tag: tag})
             await onGetOne(response, thisBlog, partners, postCollection, tag)
         }
-        if (filteredTags.length > i)
+        if (filteredTags.length > i+300)
             await new Promise(r => setTimeout(r, 60000));
     }
 
     console.log("done with loop");
 
     var jsonContent = JSON.stringify(postCollection);
+    return postCollection;
  
-    fs.writeFile(`${thisBlog}-output.json`, jsonContent, 'utf8', function (err) { 
-        return postCollection;
-    });
+    // fs.writeFile(`${thisBlog}-output.json`, jsonContent, 'utf8', function (err) { 
+    //     console.log("returning collection");
+    //     return postCollection;
+    // });
 };
 
 const onGetOne = async (resp, thisBlog, partners, postCollection, tag) => {

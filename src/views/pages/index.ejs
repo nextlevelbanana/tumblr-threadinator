@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title><%- name %> RP Threads</title>
-    <link rel="stylesheet" type="text/css" href="/<%-name%>.css">
+    <title><%- blogname %> RP Threads</title>
+    <link rel="stylesheet" type="text/css" href="/<%-blogname%>.css">
 </head>
 <body>
     
     <div class="header">
-        <img src="http://api.tumblr.com/v2/blog/<%-name%>/avatar"/>
-        <h1><%- name %>: RP thread link list</h1>
-        <img src="http://api.tumblr.com/v2/blog/<%-name%>/avatar"/>
+        <img src="http://api.tumblr.com/v2/blog/<%-blogname%>/avatar"/>
+        <h1><%- blogname %>: RP thread link list</h1>
+        <img src="http://api.tumblr.com/v2/blog/<%-blogname%>/avatar"/>
     </div>
     
 <div class="content">
 <% Object.keys(data).sort().forEach(blogName => {%>
     <h2><%-blogName%></h2>
     <% Object.keys(data[blogName]).sort().forEach(tag => {%>
-        <h3><a href="https://<%-name%>.tumblr.com/tagged/rp%3A-<%-tag.replace(/:/g, '%3A').replace(/ /g, '-')%>"><%-tag%></a></h3>
+        <h3><a href="https://<%-blogname%>.tumblr.com/tagged/rp%3A-<%-tag.replace(/:/g, '%3A').replace(/ /g, '-')%>"><%-tag%></a></h3>
         <ul>
             <% data[blogName][tag].forEach(i => {%>
                 <li><a href="<%-i%>"><%-i%></a></li>
